@@ -3,21 +3,21 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
-import { PublicKey, SystemProgram } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
 import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import toast from "react-hot-toast";
 import { Navbar } from "@/components/Navbar";
 import { StatusBadge } from "@/components/StatusBadge";
 import { useI18n } from "@/i18n/context";
-import { PROGRAM_ID, USDC_MINT_DEVNET, USDC_DECIMALS, explorerUrl } from "@/utils/constants";
+import { USDC_MINT_DEVNET, USDC_DECIMALS, explorerUrl } from "@/utils/constants";
 import { escrowPda, vaultPda, shortAddress } from "@/utils/pda";
 import { Copy, ExternalLink, Shield, ChevronLeft, Clock, CheckCircle, AlertTriangle, XCircle, Package, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
 import clsx from "clsx";
 import type { Escrowfi } from "@/idl/escrowfi";
 import IDL from "@/idl/escrowfi";
 import BnModule from "bn.js";
-import type { ArbitrateResponse } from "@/app/api/arbitrate/route";
+import type { ArbitrateResponse } from "@/types/arbitrate";
 
 // ── Mock data (replace with real program.account.escrowAccount.fetch(id)) ───
 const MOCK: Record<string, any> = {
@@ -112,7 +112,7 @@ export default function EscrowDetailPage() {
       const sellerPk = new PublicKey(escrow.seller);
       const sellerTA = await getAssociatedTokenAddress(USDC_MINT_DEVNET, sellerPk);
 
-      const tx = await program.methods
+      await program.methods
         .confirmReceipt()
         .accounts({
           buyer: publicKey,
@@ -120,7 +120,7 @@ export default function EscrowDetailPage() {
           vault: vaultKey,
           sellerTokenAccount: sellerTA,
           tokenProgram: TOKEN_PROGRAM_ID,
-        })
+        } as any)
         .rpc();
 
       toast.success("Receipt confirmed — funds released!", { id: tid });
@@ -144,7 +144,7 @@ export default function EscrowDetailPage() {
 
       await program.methods
         .markDelivered()
-        .accounts({ seller: publicKey, escrow: escrowKey })
+        .accounts({ seller: publicKey, escrow: escrowKey } as any)
         .rpc();
 
       toast.success("Marked as delivered!", { id: tid });
@@ -168,7 +168,7 @@ export default function EscrowDetailPage() {
 
       await program.methods
         .raiseDispute(disputeText)
-        .accounts({ initiator: publicKey, escrow: escrowKey })
+        .accounts({ initiator: publicKey, escrow: escrowKey } as any)
         .rpc();
 
       toast.success("Dispute raised", { id: tid });
@@ -200,7 +200,7 @@ export default function EscrowDetailPage() {
           vault: vaultKey,
           buyerTokenAccount: buyerTA,
           tokenProgram: TOKEN_PROGRAM_ID,
-        })
+        } as any)
         .rpc();
 
       toast.success("Escrow cancelled — funds returned", { id: tid });
@@ -264,7 +264,7 @@ export default function EscrowDetailPage() {
           buyerTokenAccount: buyerTA,
           sellerTokenAccount: sellerTA,
           tokenProgram: TOKEN_PROGRAM_ID,
-        })
+        } as any)
         .rpc();
 
       toast.success(`Dispute resolved — funds sent to ${toSeller ? "seller" : "buyer"}`, { id: tid });

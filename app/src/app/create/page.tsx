@@ -4,12 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
-import { Program, AnchorProvider, BN, web3 } from "@coral-xyz/anchor";
+import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
 import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import toast from "react-hot-toast";
 import { Navbar } from "@/components/Navbar";
 import { useI18n } from "@/i18n/context";
-import { PROGRAM_ID, USDC_MINT_DEVNET, DEFAULT_ARBITRATOR, USDC_DECIMALS, explorerUrl } from "@/utils/constants";
+import { USDC_MINT_DEVNET, DEFAULT_ARBITRATOR, USDC_DECIMALS, explorerUrl } from "@/utils/constants";
 import { escrowPda, vaultPda } from "@/utils/pda";
 import { Shield, Info, ArrowRight, Lock } from "lucide-react";
 import clsx from "clsx";
@@ -83,7 +83,7 @@ export default function CreatePage() {
           associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
           rent: SYSVAR_RENT_PUBKEY,
-        })
+        } as any)
         .rpc();
 
       toast.success(

@@ -3,21 +3,8 @@ import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
-export interface ArbitrateRequest {
-  escrowId: string;
-  amount: string;
-  description: string;
-  buyerEvidence: string;
-  sellerEvidence: string;
-}
-
-export interface ArbitrateResponse {
-  verdict: "buyer" | "seller" | "neither";
-  confidence: "high" | "medium" | "low";
-  reasoning: string;
-  keyFactors: string[];
-  recommendedAction: string;
-}
+import type { ArbitrateRequest, ArbitrateResponse } from "@/types/arbitrate";
+export type { ArbitrateRequest, ArbitrateResponse };
 
 export async function POST(req: NextRequest) {
   try {
