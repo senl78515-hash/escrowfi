@@ -1,0 +1,848 @@
+{
+  "address": "2DRJSTtmFh3KhbBGmJpYvGugeUaLiumcmYZtcTqKeWRd",
+  "metadata": {
+    "name": "escrowfi",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "EscrowFi — Private Smart Escrow on Solana"
+  },
+  "instructions": [
+    {
+      "name": "cancel_escrow",
+      "docs": [
+        "Buyer cancels the escrow (only allowed while status is Active).",
+        "Refunds the full amount back to the buyer."
+      ],
+      "discriminator": [
+        156,
+        203,
+        54,
+        179,
+        38,
+        72,
+        33,
+        21
+      ],
+      "accounts": [
+        {
+          "name": "buyer",
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "buyer"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.escrow_id",
+                "account": "EscrowAccount"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "buyer_token_account",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "confirm_receipt",
+      "docs": [
+        "Buyer confirms receipt — releases vault funds to the seller."
+      ],
+      "discriminator": [
+        203,
+        36,
+        80,
+        115,
+        249,
+        12,
+        141,
+        170
+      ],
+      "accounts": [
+        {
+          "name": "buyer",
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "buyer"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.escrow_id",
+                "account": "EscrowAccount"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "seller_token_account",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_escrow",
+      "docs": [
+        "Buyer creates an escrow and locks USDC into a PDA vault.",
+        "",
+        "Seeds: [\"escrow\", buyer, escrow_id_le_bytes]",
+        "Vault:  [\"vault\",  escrow_key]"
+      ],
+      "discriminator": [
+        253,
+        215,
+        165,
+        116,
+        36,
+        108,
+        68,
+        80
+      ],
+      "accounts": [
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "seller"
+        },
+        {
+          "name": "arbitrator"
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "buyer"
+              },
+              {
+                "kind": "arg",
+                "path": "escrow_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Vault token account — authority is the escrow PDA"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "buyer_token_account",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "escrow_id",
+          "type": "u64"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "mark_delivered",
+      "docs": [
+        "Seller marks the order as delivered, awaiting buyer confirmation."
+      ],
+      "discriminator": [
+        240,
+        118,
+        188,
+        142,
+        64,
+        85,
+        107,
+        18
+      ],
+      "accounts": [
+        {
+          "name": "seller",
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow.buyer",
+                "account": "EscrowAccount"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.escrow_id",
+                "account": "EscrowAccount"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "raise_dispute",
+      "docs": [
+        "Either party raises a dispute, locking funds until arbitration."
+      ],
+      "discriminator": [
+        41,
+        243,
+        1,
+        51,
+        150,
+        95,
+        246,
+        73
+      ],
+      "accounts": [
+        {
+          "name": "initiator",
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow.buyer",
+                "account": "EscrowAccount"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.escrow_id",
+                "account": "EscrowAccount"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "resolve_dispute",
+      "docs": [
+        "Arbitrator resolves the dispute — sends funds to seller or refunds buyer."
+      ],
+      "discriminator": [
+        231,
+        6,
+        202,
+        6,
+        96,
+        103,
+        12,
+        230
+      ],
+      "accounts": [
+        {
+          "name": "arbitrator",
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow.buyer",
+                "account": "EscrowAccount"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.escrow_id",
+                "account": "EscrowAccount"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "buyer_token_account",
+          "writable": true
+        },
+        {
+          "name": "seller_token_account",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "release_to_seller",
+          "type": "bool"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "EscrowAccount",
+      "discriminator": [
+        36,
+        69,
+        48,
+        18,
+        128,
+        225,
+        125,
+        135
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "DisputeResolvedEvent",
+      "discriminator": [
+        152,
+        37,
+        98,
+        245,
+        229,
+        39,
+        150,
+        78
+      ]
+    },
+    {
+      "name": "EscrowCancelledEvent",
+      "discriminator": [
+        185,
+        105,
+        9,
+        145,
+        0,
+        228,
+        166,
+        60
+      ]
+    },
+    {
+      "name": "EscrowCompletedEvent",
+      "discriminator": [
+        10,
+        248,
+        78,
+        21,
+        7,
+        117,
+        193,
+        82
+      ]
+    },
+    {
+      "name": "EscrowCreatedEvent",
+      "discriminator": [
+        79,
+        14,
+        137,
+        123,
+        229,
+        161,
+        84,
+        149
+      ]
+    },
+    {
+      "name": "EscrowDeliveredEvent",
+      "discriminator": [
+        169,
+        27,
+        1,
+        154,
+        66,
+        144,
+        148,
+        88
+      ]
+    },
+    {
+      "name": "EscrowDisputedEvent",
+      "discriminator": [
+        176,
+        9,
+        25,
+        245,
+        126,
+        43,
+        148,
+        52
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAmount",
+      "msg": "Amount must be greater than zero"
+    },
+    {
+      "code": 6001,
+      "name": "DescriptionTooLong",
+      "msg": "Description exceeds 200 characters"
+    },
+    {
+      "code": 6002,
+      "name": "ReasonTooLong",
+      "msg": "Dispute reason exceeds 500 characters"
+    },
+    {
+      "code": 6003,
+      "name": "BuyerSellerSame",
+      "msg": "Buyer and seller cannot be the same wallet"
+    },
+    {
+      "code": 6004,
+      "name": "Unauthorized",
+      "msg": "Not authorized to perform this action"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidStatus",
+      "msg": "Escrow is not in the correct state for this action"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidTokenAccount",
+      "msg": "Token account has incorrect owner or mint"
+    }
+  ],
+  "types": [
+    {
+      "name": "DisputeResolvedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow_id",
+            "type": "u64"
+          },
+          {
+            "name": "released_to_seller",
+            "type": "bool"
+          },
+          {
+            "name": "arbitrator",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "buyer",
+            "type": "pubkey"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "arbitrator",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "escrow_id",
+            "type": "u64"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "EscrowStatus"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "type": "u8"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "disputed_at",
+            "type": "i64"
+          },
+          {
+            "name": "dispute_reason",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowCancelledEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow_id",
+            "type": "u64"
+          },
+          {
+            "name": "buyer",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowCompletedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow_id",
+            "type": "u64"
+          },
+          {
+            "name": "buyer",
+            "type": "pubkey"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowCreatedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow_id",
+            "type": "u64"
+          },
+          {
+            "name": "buyer",
+            "type": "pubkey"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          },
+          {
+            "name": "arbitrator",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowDeliveredEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow_id",
+            "type": "u64"
+          },
+          {
+            "name": "seller",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowDisputedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow_id",
+            "type": "u64"
+          },
+          {
+            "name": "raised_by",
+            "type": "pubkey"
+          },
+          {
+            "name": "reason",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Delivered"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Disputed"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    }
+  ]
+}
